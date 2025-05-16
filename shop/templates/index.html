@@ -1,0 +1,54 @@
+{% extends 'layouts/main.html' %} {% block title %} ShopKart | Online Shopping
+{% endblock title %} {% block content %} {% include 'message.html' %}
+<div id="spinner" class="text-center">
+<div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div id="home-content">
+{% include 'slider.html'%}
+<h5></h5>
+<div class="container" style="margin-top: 70px">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-3">Latest Offers</h2>
+      <hr style="border-color: #292929" />
+      
+    </div>
+    
+    {% for item in products %}
+    <div class="col-md-4 col-lg-3">
+          <div class="card my-3" id="icard" style="width: 14rem;">
+          <br>
+          <img src="{{item.product_image.url}}" class="card-image-top" alt="Categories"/>
+          <a href="{% url 'pdetails' item.category.name item.name %}" style="text-decoration: none">
+            <div class="card-body">
+              <h5 class="card-title">{{item.name}}</h5>
+              <p class="card-text">
+                    <span class="float-end old_price">Rs.{{ item.selling_price | stringformat:'d' }}</span>
+                  </p>
+                  <br>
+            </div> 
+        </div></a>
+        </div>
+    {% endfor %}
+  </div>
+</div>
+{% include 'footer.html' %}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const spinner = document.getElementById("spinner")
+    //const databox = document.getElementById("databox")
+    const homecontent = document.getElementById("home-content")
+
+    //console.log(spinbox)
+    //console.log(databox)
+    setTimeout(()=>{
+        spinner.classList.add("not-visible")
+        // Inject the loaded home template content into a specific element
+        homecontent.style.display = 'block';
+    },2000)
+    
+</script>
+{% endblock content %}

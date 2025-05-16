@@ -1,0 +1,61 @@
+{% extends 'layouts/main.html' %} {% block title %} ShopKart | Online
+Shopping {% endblock title %} {% block content %}{% include 'message.html' %}
+<div id="spinner" class="text-center">
+<div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div id="home-content">
+<section class=" py-4" style="margin-top: 100px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-3">{{category_name}}</h2>
+        <hr style="border-color: #292929" />
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'categories' %}">Categories</a>
+          </li> <i style="padding-inline: 8px;"> > </i>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ category_name }}
+          </li>
+        </ul>
+        
+      </div>
+      {% for item in products %}
+      <div class="col-md-4 col-lg-3">
+      <div class="card my-3" id="pcard" style="width: 15rem; height: 360px;">
+      <br>
+      <img src="{{item.product_image.url}}" style="height: 250px;" class="card-image-top" alt="Categories"/>
+      <a href="{% url 'pdetails' category_name item.name %} " style="text-decoration: none">
+        <div class="card-body">
+          <h6 class="card-title">{{item.name}}</h6>
+          <p class="card-text">
+                <span class="float-end old_price">Rs.{{ item.selling_price | stringformat:'d' }}</span>
+              </p>
+              <br>
+        </div> 
+    </div></a>
+    </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% include 'footer.html' %}
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const spinner = document.getElementById("spinner")
+    const databox = document.getElementById("databox")
+    const homecontent = document.getElementById("home-content")
+
+    //console.log(spinbox)
+    //console.log(databox)
+    setTimeout(()=>{
+        spinner.classList.add("not-visible")
+        // Inject the loaded home template content into a specific element
+        homecontent.style.display = 'block';
+    },2000)
+</script>
+{% endblock content %}

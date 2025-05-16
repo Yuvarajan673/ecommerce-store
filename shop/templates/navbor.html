@@ -1,0 +1,543 @@
+{% block content %} {% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <!-- NAVBOR ITEMS -->
+
+    <!-- MINIMIZED WINDOW NAVBOR -->
+    <!-- OFF CANVAS TOGGLE BUTTON -->
+    <button class="navbar-toggler" style="box-shadow: none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasbor"><i class="fa fa-shopping-cart"></i></button>
+
+    <!-- SEARCH BOR -->
+    <form class="d-flex" id="search">
+      <div class="input-group">
+        <div class="input-group" id="group">
+          <input class="form-control" id="searchInput" type="search" placeholder="Search" aria-label="Search" />
+          <button class="btn bg-light" type="button"><span class="fa fa-search"></span></button>
+        </div>
+        <div id="searchlist" data-bs-auto-close="outside">
+          <ul id="resultsList"></ul>
+        </div>
+      </div>
+    </form>
+
+    <!-- OFF CANVAS -->
+    <a class="navbar-brand" id="title" href="{% url 'home' %}"><i class="fa fa-shopping-cart"></i> ShopKart</a>
+    <div class="offcanvas offcanvas-start text-bg-dark" style="width: 300px" data-bs-backdrop="false" data-scroll="true" tabindex="-1" id="offcanvasbor">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="canvasitem"><i class="fa fa-shopping-cart"></i> ShopKart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <hr />
+      <div class="offcanvas-body">
+        <ul class="navbar-nav" id="navbor1">
+          <li class="nav-item">
+            <a class="nav-link" id="home" aria-current="page" href="{% url 'home' %}"><i class="fa fa-home" style="font-size: x-large"></i> <span> Home</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="col" href="{% url 'categories' %}"><i class="fa fa-cubes" style="font-size: x-large"></i><span> Categories</span></a>
+          </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" id="cart" aria-current="page" href="{% url 'cart' %}"><i class="fa fa-cart-plus" style="font-size: x-large"></i><span> Cart</span></a>
+          </li>
+          <li>
+            <a class="dropdown-item bg-dark" onclick="return confirm('Are You Sure To Logout')" href="{% url 'logout' %}">
+              <i class="fa fa-sign-out" style="font-size: x-large; margin-bottom: 10px"></i><span>Logout</span></a
+            >
+          </li>
+          {% else %}
+          <!-- LOGIN AND REGISTER MODAL LINK -->
+          <li class="nav-item">
+            <a class="nav-link" id="log" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-sign-in" style="font-size: x-large"></i><span>Login</span></a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAXIMIZED WINDOW NAVBOR -->
+    <div class="navbar">
+      <ul class="navbar-nav" id="navbor">
+        <li class="nav-item">
+          <a class="nav-link" id="home" aria-current="page" href="{% url 'home' %}"><i class="fa fa-home" style="font-size: x-large"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="col" href="{% url 'categories' %}"><i class="fa fa-cubes" style="font-size: x-large"></i> Categories</a>
+        </li>
+
+        {% if request.user.is_authenticated %}
+
+        <li class="nav-item">
+          <a class="nav-link" id="cart" aria-current="page" href="{% url 'cart' %}"><i class="fa fa-cart-plus" style="font-size: x-large"></i> Cart</a>
+        </li>
+
+        <!-- PROFILE MENU DROPDOWN LINK -->
+        {% if request.user.userprofile.profile_picture %}
+        <img src="{{ request.user.userprofile.profile_picture.url }}" id="profileimage1" role="button" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false" />
+        {% else %}
+        <a class="nav-link" href="#" id="userProfile1" role="button" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false"> {{ request.user.username.0|upper }} </a>
+        {% endif %}
+        <!-- PROFILE MENU DROPDOWN -->
+        <ul class="dropdown-menu dropdown-menu-end bg-dark" id="dropdown1" aria-labelledby="navbarDropdown">
+          <div class="container" id="con3">
+            {% if request.user.userprofile.profile_picture %}
+            <span class="fa fa-pencil" id="edit"></span>
+            <img src="{{ request.user.userprofile.profile_picture.url }}" id="profileimage2" data-toggle="modal" data-target="#profileimage" role="button" />
+
+            {% else %}
+            <a href="#" class="nav-link position-relative" data-toggle="modal" data-target="#profileimage" id="userProfile2" role="button">
+              {{ request.user.username.0|upper }}
+              <span style="font-size: small; margin-top: 35px; margin-left: 2px; border-radius: 5px; background-color: chartreuse; padding: 3px" class="fa fa-pencil position-absolute"></span>
+            </a>
+            {% endif %}
+            <h5 id="info">Hi, {{ request.user.username}}</h5>
+            <p id="info" style="font-size: small">{{ request.user.email}}</p>
+            {% if request.user.userprofile.profile_picture %}
+            <li>
+              <a class="dropdown-item bg-dark" onclick="return confirm('Are You Sure To Remove?')" href="{% url 'proimgremove' %}">
+                <i class="uil uil-trash" style="font-size: x-large"></i> Remove Profile Image</a
+              >
+            </li>
+            {% endif %}
+            <li>
+              <a class="dropdown-item bg-dark" data-toggle="modal" data-target="#repass"> <i class="uil uil-lock" style="font-size: x-large"></i> Change Password</a>
+            </li>
+            <hr style="color: #bbb" />
+            <li>
+              <a class="dropdown-item bg-dark">
+                <i class="fa fa-moon-o" style="font-size: x-large"></i> Dark Mode
+                <input type="checkbox" id="check" />
+                <label for="check" id="themebtn1" class="button"></label
+              ></a>
+            </li>
+            <li>
+              <a class="dropdown-item bg-dark" onclick="return confirm('Are You Sure To Logout')" href="{% url 'logout' %}">
+                <i class="fa fa-sign-out" style="font-size: x-large; margin-bottom: 10px"></i> Logout</a
+              >
+            </li>
+          </div>
+        </ul>
+        {% else %}
+
+        <!-- LOGIN AND REGISTER MODAL LINK -->
+        <li class="nav-item">
+          <a class="nav-link" id="log" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-sign-in" style="font-size: x-large"></i> Login</a>
+        </li>
+        <!-- LOGIN AND REGISTER MODAL -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-vertical-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <span class="closebtn" data-dismiss="modal">&times;</span>
+                <div class="container" id="con1">
+                  <div class="forms">
+                    <div class="form login">
+                      <span class="title">Login</span>
+                      <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-field">
+                          <input type="text" name="username" id="username" placeholder="name@example.com" required />
+                          <i class="uil uil-envelope icon"></i>
+                        </div>
+                        <div class="input-field">
+                          <input type="password" name="password" id="password" class="password" autocomplete="on" placeholder="Enter your password" required />
+                          <i class="uil uil-lock icon"></i>
+                          <i class="uil uil-eye-slash showHidePw"></i>
+                        </div>
+                        <button id="loadbtn" type="submit">
+                          <span id="text">Login</span>
+                          <div id="spinner2" class="text-center not-visible">
+                            <div class="spinner-border text-light" role="status"></div>
+                          </div>
+                        </button>
+                        <script>
+                          const spinner2 = document.getElementById('spinner2');
+                          const username = document.getElementById('username');
+                          const password = document.getElementById('password');
+                          const btn = document.getElementById('loadbtn');
+                          const text = document.getElementById('text');
+
+                          btn.onclick = function () {
+                            if (username.value && password.value) {
+                              spinner2.classList.remove('not-visible');
+                              text.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner2.classList.add('not-visible');
+                                text.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 4000);
+                            } else {
+                              spinner2.classList.remove('not-visible');
+                              text.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner2.classList.add('not-visible');
+                                text.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 150);
+                            }
+                          };
+                        </script>
+                      </form>
+
+                      <div class="login-signup">
+                        <span class="text"
+                          >Don't have an account?
+                          <a href="#" class="text signup-link" onclick="signUp()">Register</a>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <div class="form signup">
+                      <span class="title">Registration</span>
+                      <form action="{% url 'registration' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-field">
+                          <input type="text" id="username1" name="username" placeholder="Enter your username" required />
+                          <i class="uil uil-user"></i>
+                        </div>
+                        <div class="input-field">
+                          <input type="email" id="email" name="email" placeholder="name@example.com" required />
+                          <i class="uil uil-envelope icon"></i>
+                        </div>
+                        <div class="input-field">
+                          <input type="password" id="password1" name="password1" class="password" autocomplete="on" placeholder="Create a password" required />
+                          <i class="uil uil-lock icon"></i>
+                        </div>
+                        <div class="input-field">
+                          <input type="password" id="password2" name="password2" class="password" autocomplete="on" placeholder="Confirm a password" required />
+                          <i class="uil uil-lock icon"></i>
+                          <i class="uil uil-eye-slash showHidePw"></i>
+                        </div>
+                        <button id="loadbtn1" type="submit">
+                          <span id="text1">Register</span>
+                          <div id="spinner3" class="text-center not-visible">
+                            <div class="spinner-border text-light" role="status"></div>
+                          </div>
+                        </button>
+                        <script>
+                          const spinner3 = document.getElementById('spinner3');
+                          const username1 = document.getElementById('username1');
+                          const email = document.getElementById('email');
+                          const password1 = document.getElementById('password1');
+                          const password2 = document.getElementById('password2');
+                          const btn1 = document.getElementById('loadbtn1');
+                          const text1 = document.getElementById('text1');
+
+                          btn1.onclick = function () {
+                            if (username1.value && email.value && password1.value && password2.value) {
+                              spinner3.classList.remove('not-visible');
+                              text1.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner3.classList.add('not-visible');
+                                text1.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 4000);
+                            } else {
+                              spinner3.classList.remove('not-visible');
+                              text1.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner3.classList.add('not-visible');
+                                text1.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 150);
+                            }
+                          };
+                        </script>
+                      </form>
+
+                      <div class="login-signup">
+                        <span class="text"
+                          >Already have an account?
+                          <a href="#" class="text login-link" onclick="login()">Login</a>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DARKMODE DROPDOWN LINK -->
+        <a
+          class="nav-link fa fa-adjust"
+          id="adjust"
+          type="button"
+          id="dropdownMenuClickableInside"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="false"
+          aria-expanded="false"
+          style="font-size: x-large; padding-left: 18px"
+        >
+        </a>
+        <!-- DARKMODE DROPDOWN -->
+        <ul class="dropdown-menu dropdown-menu-end bg-dark" id="dropdown2" aria-labelledby="dropdownMenuClickableInside">
+          <li style="margin-left: 7px; width: 220px">
+            <a class="dropdown-item bg-dark">
+              <i class="fa fa-moon-o" style="font-size: x-large"></i> Dark Mode
+              <input type="checkbox" id="check" />
+              <label for="check" id="themebtn2" class="button"></label>
+            </a>
+          </li>
+        </ul>
+        {% endif %}
+
+        <!-- CHANGE PASSWORD MODAL -->
+        <div class="modal fade" id="repass" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-vertical-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <span class="closebtn" data-dismiss="modal">&times;</span>
+                <div class="container" id="con1">
+                  <div class="forms">
+                    <div class="form">
+                      <span class="title">Change Password</span>
+                      <form action="{% url 'repass' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-field">
+                          <input type="password" name="password1" id="password3" class="password" autocomplete="on" placeholder="Create a password" required />
+                          <i class="uil uil-lock icon"></i>
+                        </div>
+                        <div class="input-field">
+                          <input type="password" name="password2" id="password4" class="password" autocomplete="on" placeholder="Confirm a password" required />
+                          <i class="uil uil-lock icon"></i>
+                          <i class="uil uil-eye-slash showHidePw"></i>
+                        </div>
+                        <button id="loadbtn2" type="submit">
+                          <span id="text2">Submit</span>
+                          <div id="spinner4" class="text-center not-visible">
+                            <div class="spinner-border text-light" role="status"></div>
+                          </div>
+                        </button>
+                        <script>
+                          const spinner4 = document.getElementById('spinner4');
+                          const password3 = document.getElementById('password3');
+                          const password4 = document.getElementById('password4');
+                          const btn2 = document.getElementById('loadbtn2');
+                          const text2 = document.getElementById('text2');
+
+                          btn2.onclick = function () {
+                            if (password3.value && password4.value) {
+                              spinner4.classList.remove('not-visible');
+                              text2.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner4.classList.add('not-visible');
+                                text2.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 4000);
+                            } else {
+                              spinner4.classList.remove('not-visible');
+                              text2.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner4.classList.add('not-visible');
+                                text2.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 150);
+                            }
+                          };
+                        </script>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE IMAGE CHAMGE MODAL -->
+        <div class="modal fade" id="profileimage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-vertical-centered" role="document">
+            <div class="modal-content" style="height: 500px">
+              <div class="modal-body">
+                <span class="closebtn" data-dismiss="modal">&times;</span>
+                <div class="container" id="con1">
+                  <div class="forms">
+                    <div class="form" style="margin-top: 20px">
+                      <span class="title">Update Profile Image</span>
+                      <form action="{% url 'profileimage' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <p>A picture helps people recognize you.</p>
+                        <div class="text-danger not-visible" id="error">Please Select The Image</div>
+                        <!-- HTML -->
+                        {% if request.user.userprofile.profile_picture %}
+                        <label for="fileinput2">
+                          <img src="{{ request.user.userprofile.profile_picture.url }}" id="profileimage4" role="button" />
+                        </label>
+                        <input type="file" id="fileinput2" name="fileinput" required />
+                        <button type="submit">Upload</button>
+                        <script>
+                          const fileInput2 = document.getElementById('fileinput2');
+                          const imagePreview2 = document.getElementById('profileimage4');
+                          fileInput2.addEventListener('change', function () {
+                            // Check if any file is selected
+                            if (this.files && this.files[0]) {
+                              // Get the first file
+                              const file = this.files[0];
+
+                              imagePreview2.style.display = 'block';
+                              // Set the src attribute of the image to the object URL of the file
+                              imagePreview2.src = URL.createObjectURL(file);
+                            }
+                          });
+                        </script>
+                        {% else %}
+                        <label for="fileinput" id="userProfile3">{{ request.user.username.0|upper }}</label>
+                        <input type="file" id="fileinput" name="fileinput" required />
+                        <img id="profileimage3" style="display: none" src="#" />
+                        <script>
+                          const fileInput = document.getElementById('fileinput');
+                          const imagePreview = document.getElementById('profileimage3');
+                          const label = document.getElementById('userProfile3');
+                          fileInput.addEventListener('change', function () {
+                            // Check if any file is selected
+                            if (this.files && this.files[0]) {
+                              // Get the first file
+                              error2.classList.add('not-visible');
+                              const file = this.files[0];
+                              label.style.display = 'none';
+                              imagePreview.style.display = 'block';
+                              // Set the src attribute of the image to the object URL of the file
+                              imagePreview.src = URL.createObjectURL(file);
+                            }
+                          });
+                        </script>
+                        <button id="loadbtn3" type="submit">
+                          <span id="text3">Upload</span>
+                          <div id="spinner5" class="text-center not-visible">
+                            <div class="spinner-border text-light" role="status"></div>
+                          </div>
+                        </button>
+                        <script>
+                          const spinner5 = document.getElementById('spinner5');
+                          const fileinput = document.getElementById('fileinput');
+                          const btn3 = document.getElementById('loadbtn3');
+                          const text3 = document.getElementById('text3');
+                          const error2 = document.getElementById('error');
+
+                          btn3.onclick = function () {
+                            if (fileInput.value) {
+                              spinner5.classList.remove('not-visible');
+                              text3.classList.add('not-visible');
+                              setTimeout(() => {
+                                spinner5.classList.add('not-visible');
+                                text3.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 4000);
+                            } else {
+                              spinner5.classList.remove('not-visible');
+                              text3.classList.add('not-visible');
+                              error2.classList.remove('not-visible');
+                              setTimeout(() => {
+                                spinner5.classList.add('not-visible');
+                                text3.classList.remove('not-visible');
+                                // Inject the loaded home template content into a specific element
+                              }, 150);
+                            }
+                          };
+                        </script>
+                        {% endif %}
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+  const container = document.querySelector('.container'),
+    //signUp = document.querySelector(".signup-link"),
+    //login = document.querySelector(".login-link"),
+
+    pwShowHide = document.querySelectorAll('.showHidePw'),
+    pwFields = document.querySelectorAll('.password'),
+    dmode = document.getElementById('dmode'),
+    dmode2 = document.getElementById('dmode2'),
+    searchInput = document.getElementById('searchInput'),
+    searchlist = document.getElementById('searchlist'),
+    resultsList = document.getElementById('resultsList');
+
+  function setTheme(theme) {
+    document.body.classList.toggle('dark-mode', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }
+
+  // Function to toggle between dark and light themes
+  function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+  }
+
+  // Event listener for the theme switch
+  const themeSwitch = document.getElementById('check');
+  themeSwitch.addEventListener('change', toggleTheme);
+
+  // Set the initial theme on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    setTheme(localStorage.getItem('theme') || 'light');
+    themeSwitch.checked = localStorage.getItem('theme') === 'dark';
+  });
+
+  //   js code to show/hide password and change icon
+  pwShowHide.forEach((eyeIcon) => {
+    eyeIcon.addEventListener('click', () => {
+      pwFields.forEach((pwField) => {
+        if (pwField.type === 'password') {
+          pwField.type = 'text';
+
+          pwShowHide.forEach((icon) => {
+            icon.classList.replace('uil-eye-slash', 'uil-eye');
+          });
+        } else {
+          pwField.type = 'password';
+
+          pwShowHide.forEach((icon) => {
+            icon.classList.replace('uil-eye', 'uil-eye-slash');
+          });
+        }
+      });
+    });
+  });
+
+  //js code to appear signup and login form
+  function signUp() {
+    container.classList.add('active');
+  }
+  function login() {
+    container.classList.remove('active');
+  }
+
+  searchInput.addEventListener('input', function () {
+    const query = this.value.trim().toLowerCase();
+    if (query === '') {
+      searchlist.style.display = 'none';
+      resultsList.innerHTML = '';
+      return;
+    }
+
+    // Simulating search results (replace this with your actual search logic)
+    const mockData = ['Result 1', 'Result 2', 'Result 3', 'Result 4', 'Result 5'];
+    const filteredResults = mockData.filter((result) => result.toLowerCase().includes(query));
+
+    if (filteredResults.length > 0) {
+      const listItems = filteredResults.map((result) => `<a href="#"><li>${result}</li></a>`).join('');
+      resultsList.innerHTML = listItems;
+      searchlist.style.display = 'inline';
+    } else {
+      resultsList.innerHTML = '<li>No results found</li>';
+      searchlist.style.display = 'block';
+    }
+  });
+</script>
+{% endblock content %}

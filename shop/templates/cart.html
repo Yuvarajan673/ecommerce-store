@@ -1,0 +1,65 @@
+{% extends 'layouts/main.html' %} {% load static %} {% block title %}
+Cart | Online Shopping {% endblock title %} {% block content %}{% include 'message.html' %}
+<div id="spinner" class="text-center">
+<div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div id="home-content">
+<section class=" py-4" style="margin-top: 100px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-3">Cart Items</h2>
+        <hr style="border-color: #292929" />
+      </div>
+      
+      <table class="">
+        {% if cart %}
+        <tr>
+            <th>Image</th>
+            <th>Product Name</th>
+            <th>Unit</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Remove</th>
+        </tr>
+
+         
+        {% for item in cart %} 
+        <tr>
+            <td><img src="{{item.product.product_image.url}}" height="75px" alt="{{item.product.name}}"></td><br><br><br>
+            <td>{{item.product.name}}</td>
+            <td>Rs. {{item.product.selling_price | stringformat:'d'}}</td>
+            <td>{{item.product_qty}}</td>
+            <td>Rs. {{item.total_cost | stringformat:'d'}}</td>
+            <td><a href="{% url 'remove_cart' item.id %}" onclick="return confirm('Are You Sure To Remove?')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Remove</a> </td>
+        </tr>
+       {% endfor %}
+       {% else %}
+              <h4 class="text-center fw-light" style="margin-top: 150px;">No Such a Item Found</h4>
+       {% endif %}
+       
+      </table>
+      
+    </div>
+  </div>
+</section>
+{% include 'footer.html' %}
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const spinner = document.getElementById("spinner")
+    const databox = document.getElementById("databox")
+    const homecontent = document.getElementById("home-content")
+
+    //console.log(spinbox)
+    //console.log(databox)
+    setTimeout(()=>{
+        spinner.classList.add("not-visible")
+        // Inject the loaded home template content into a specific element
+        homecontent.style.display = 'block';
+    },2000)
+</script>
+{% endblock content %}

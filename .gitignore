@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+env/
+venv/
+*.env
+*.log
+db.sqlite3
+staticfiles/
+media/
+*.egg-info/
+dist/
+build/
+.vscode/
+Pipfile.lock

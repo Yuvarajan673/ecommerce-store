@@ -1,0 +1,93 @@
+{% extends 'layouts/main.html' %} {% load static %} {% block title %}
+Collections | Online Shopping {% endblock title %} {% block content %}{% include 'message.html' %}
+<div id="spinner" class="text-center">
+<div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div id="home-content">
+{% if request.user.is_authenticated %}
+<section class=" py-4" style="margin-top: 100px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-3">Categories</h2>
+        <hr style="border-color: #292929" />
+        
+      </div>
+
+      {% for item in category %}
+        <div class="card my-3" id="ccard" style="width: 14rem;">
+          <br>
+          <img src="{{item.image.url}}" class="card-image-top" alt="Categories"/>
+            <div class="card-body">
+              <h5 class="card-title">{{item.name}}</h5>
+              <a href="{% url 'products' item.name %}" style="box-shadow: none;" class="btn text-success">View More <i class="fa fa-angle-double-right"></i></a>
+            </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section
+  class="py-5 text-center container"
+  style="margin-top: 100px"
+>
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <h1 class="fw-light">👋 Bestsellers 🛒</h1>
+      <p class="lead">
+        Our most popular products based on sales. Updated hourly.
+        "Welcome back to our shopping haven! As you step into our online marketplace, get ready to embark on a delightful journey of discovery and savings. Log in to your account and unlock a world filled with exclusive deals, personalized recommendations, and a seamless shopping experience tailored just for you.
+      </p>
+      <p>
+        <a
+          href=""
+          class="btn btn-secondary my-2"
+          >Login To Continue !!</a
+        >
+      </p>
+    </div>
+  </div>
+</section>
+<section class="py-4 my5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-3">Categories</h2>
+        <hr style="border-color: #292929" />
+        {% include 'message.html' %}
+      </div>
+
+      {% for item in category %}
+      <div class="card my-3" id="ccard" style="width: 14rem;">
+          <br>
+          <img src="{{item.image.url}}" class="card-image-top" alt="Categories"/>
+            <div class="card-body">
+              <h5 class="card-title">{{item.name}}</h5>
+              <a href="{% url 'products' item.name %}" class="btn text-success" style="box-shadow: none;">View More <i class="fa fa-angle-double-right"></i></a>
+            </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% include 'footer.html' %}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const spinner = document.getElementById("spinner")
+    const databox = document.getElementById("databox")
+    const homecontent = document.getElementById("home-content")
+
+    //console.log(spinbox)
+    //console.log(databox)
+    setTimeout(()=>{
+        spinner.classList.add("not-visible")
+        // Inject the loaded home template content into a specific element
+        homecontent.style.display = 'block';
+    },2000)
+</script>
+{% endblock content %}

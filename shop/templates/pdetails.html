@@ -1,0 +1,166 @@
+{% extends 'layouts/main.html' %} {% block title %} ShopKart | Online Shopping
+{% endblock title %} {% block content %}{% include 'message.html' %}
+<div id="spinner" class="text-center">
+<div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div id="home-content">
+<section class=" py-4" style="margin-top: 100px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-3">{{products.name}}</h2>
+        <hr style="border-color: #292929" />
+       <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'categories' %}">Categories</a></li><i style="padding-inline: 8px;"> > </i>
+        <li class="breadcrumb-item"><a href="{% url 'products' category_name  %}">{{ category_name }}</a></li><i style="padding-inline: 8px;"> > </i>
+        <li class="breadcrumb-item active" aria-current="page">{{ products.name }}</li>
+       </ul>
+       
+      </div>
+      <div class="card col-4 my-3 pic-box">
+        {% if products.trending %}
+        <div class="hot">Hot</div>
+        {% endif %}
+        <br>
+        <img
+          src="{{products.product_image.url}}"
+          class="card-img-top"
+          alt="products"
+        /> <br>
+      </div>
+      <div class="col-8 my-3 ">
+        <h5 class="text-success" id="dtl">{{products.name}}</h5>
+        <p id="dtl">Seller :{{products.vendor}}</p>
+        <p id="dtl">{{products.description}}</p>
+       <h6 class="my-2" id="dtl" style="color: #ff2727;">
+         Current Price  <s>Rs.{{products.original_price}}</s>
+        </h6>
+        <h5 class="my-2" id="dtl" style="color: #0051ff;">Selling Price Rs.{{products.selling_price}}</h5>
+        <div class="my-3">
+          {% if products.quantity > 0 %}
+          <input type="hidden" value="{{ products.id }}" id="pid">
+          <p>
+            <div class="input-group" style="width: 150px;">
+              <button class="input-group-text bg-success text-light" id="btnMinus"><i class="fa fa-minus"></i></button>
+              <input type="text" maxlength="2" aria-valuemax="10" aria-valuemin="1" name="qty" id="txtQty" value="1" class="form-control text-center" disabled>
+              <button class="input-group-text bg-success text-light" id="btnPlus"><i class="fa fa-plus"></i></button>
+            </div>
+          </p>
+          <button class="btn btn-primary" id="btnCart">
+            <i class="fa fa-cart-plus"></i> Add To Cart
+          </button>
+          {% else %}
+          <button class="btn btn-secondary disabled">
+            <i class="fa fa-paper-plane"></i> Out Of Stack
+          </button>
+          {% endif %}
+          <button class="btn btn-danger">
+            <i class="fa fa-heart"></i></i>
+          </button><br><br>
+          <a href="#" class="btn btn-success" type="button" style="padding-right: 40px; padding-left: 40px;">Buy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% include 'footer.html' %}
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const spinner = document.getElementById("spinner")
+    const databox = document.getElementById("databox")
+    const homecontent = document.getElementById("home-content")
+
+    //console.log(spinbox)
+    //console.log(databox)
+    setTimeout(()=>{
+        spinner.classList.add("not-visible")
+        // Inject the loaded home template content into a specific element
+        homecontent.style.display = 'block';
+    },2000)
+</script>
+<script>
+document.addEventListener("DOMContentLoaded",function(event){
+  const btnPlus = document.getElementById("btnPlus");
+  const btnMinus = document.getElementById("btnMinus");
+  const txtQty = document.getElementById("txtQty");
+  const pid = document.getElementById("pid");
+  const btnCart = document.getElementById("btnCart");
+  //const tkn = document.getElementsByName("csrfmiddlewaretoken");
+
+
+  
+  btnPlus.addEventListener("click", function(){
+    let qty=parseInt(txtQty.value,10);
+    qty=isNaN(qty)?1:qty;
+    //console.log(qty);
+    if(qty<10){
+      qty++;
+      txtQty.value=qty;
+    }
+  });
+
+  btnMinus.addEventListener("click", function(){
+    let qty=parseInt(txtQty.value,10);
+    qty=isNaN(qty)?1:qty;
+    //console.log(qty);
+    if(qty>1){
+      qty--;
+      txtQty.value=qty;
+    }
+  });
+  
+   // Assuming btnCart and txtQty are already defined
+
+btnCart.addEventListener("click", function() {
+  let qty = parseInt(txtQty.value, 10);
+  qty = isNaN(qty) ? 1 : qty;
+
+  
+    if(txtQty.value<1){
+      txtQty.value = 1
+    }
+
+
+  if (qty > 0 && qty < 11) {
+    if(txtQty.value>10){
+
+    }
+    let postObj = {
+      product_qty: qty,
+      pid: pid.value,
+      //token: tkn
+    };
+
+    //console.log(postObj);
+
+    fetch("/addtocart", {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json', // Specify Content-Type as JSON
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': '{{ csrf_token }}', // Make sure this is replaced with the actual CSRF token
+      },
+      body: JSON.stringify(postObj),
+    }).then(response => {
+      return response.json();
+    }).then(data => {
+      //console.log(data);
+      alert(data['status']);
+      // Handle the response data as needed
+    }).catch(error => {
+      console.error('Error:', error);
+    });
+
+  } else {
+    alert("Product Range To Add To Cart Is 1 To 10");
+  }
+});
+
+
+});
+</script>
+{% endblock content %}
