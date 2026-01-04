@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-&md7-%o+hdt)l64ngt!0%wm=et-mc8ujtm_*&ifxmvair6e!s+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -80,17 +80,10 @@ WSGI_APPLICATION = 'joes_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shopkart',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD': 'mysqldbmine',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 
 # Password validation
@@ -128,13 +121,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL='/images/'
-MEDIA_ROOT=BASE_DIR/'static'
 
-STATICFILES_DIRS=[
-    BASE_DIR/'static'
-]
+MEDIA_URL='/media/'
+MEDIA_ROOT=BASE_DIR/'media'
+
 
 # Default primary key field type
 # https://docs.d
